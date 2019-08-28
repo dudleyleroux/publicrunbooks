@@ -2,7 +2,7 @@
 
 
 <# Global variables #>
-$Global:AzureStorageAccountName = "domainmanagementdiag514"
+$Global:AzureStorageAccountName = Get-AutomationVariable -Name 'storageaccountname' #you will need to configure this variable in your automation account.
 $Global:AzureStorageAccountKey = Get-AutomationVariable -Name 'azurestoragekey' #you will need to configure this variable in your automation account.
 $Global:recipientemail = 'me@here.com'
 $Global:recipientname = 'My Name'
@@ -78,7 +78,7 @@ $AzureOrgIdCredential = "dudleytestcred" #you will need to configure this creden
 $Cred = Get-AutomationPSCredential -Name $AzureOrgIdCredential
 
 $context = New-AzureStorageContext -StorageAccountName $Global:AzureStorageAccountName -StorageAccountKey $Global:AzureStorageAccountKey
-$Container = "studentupload"
+$Container = "blobfiledirectory"
 
 $blobname =  "textfiletosend.txt"
 $b=$env:TEMP + "\$blobname"
