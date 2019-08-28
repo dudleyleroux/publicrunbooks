@@ -3,7 +3,7 @@
 
 <# Global variables #>
 $Global:AzureStorageAccountName = "domainmanagementdiag514"
-$Global:AzureStorageAccountKey = Get-AutomationVariable -Name 'azurestoragekey'
+$Global:AzureStorageAccountKey = Get-AutomationVariable -Name 'azurestoragekey' #you will need to configure this variable in your automation account.
 $Global:recipientemail = 'dudley.leroux@emotionstudios.co.za'
 $Global:recipientname = 'Dudley LeRoux'
 $Global:recipient2email = 'dudley@ogive.co.za'
@@ -17,7 +17,7 @@ Function SendMail()
 {
 
 	$sendEmailUrl = "https://api.sendgrid.com/v3/mail/send"
-    $apiKey = Get-AutomationVariable -Name 'sendgridapikey' #Variable configured in automation account.
+    $apiKey = Get-AutomationVariable -Name 'sendgridapikey' #Variable configured in automation account. #you will need to configure this variable in your automation account.
 
 $headers = @{}
 $headers.Add("Authorization","Bearer $apiKey")
@@ -74,7 +74,7 @@ Invoke-RestMethod -Method Post `
 
 Function Get-ItemFromAzureStorage {
 
-$AzureOrgIdCredential = "dudleytestcred"
+$AzureOrgIdCredential = "dudleytestcred" #you will need to configure this credential in your automation account.
 $Cred = Get-AutomationPSCredential -Name $AzureOrgIdCredential
 
 $context = New-AzureStorageContext -StorageAccountName $Global:AzureStorageAccountName -StorageAccountKey $Global:AzureStorageAccountKey
