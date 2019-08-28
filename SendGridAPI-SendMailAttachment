@@ -4,14 +4,14 @@
 <# Global variables #>
 $Global:AzureStorageAccountName = "domainmanagementdiag514"
 $Global:AzureStorageAccountKey = Get-AutomationVariable -Name 'azurestoragekey' #you will need to configure this variable in your automation account.
-$Global:recipientemail = 'dudley.leroux@emotionstudios.co.za'
-$Global:recipientname = 'Dudley LeRoux'
-$Global:recipient2email = 'dudley@ogive.co.za'
-$Global:recipient2name = 'Dudley LeRoux'
-$Global:senderemailaddress = 'dudley.leroux@emotionstudios.co.za'
-$Global:sendername = 'Dudley LeRoux'
-$Global:replytoaddress = 'dudley.leroux@emotionstudios.co.za'
-$Global:replytoname = 'Dudley LeRoux'
+$Global:recipientemail = 'me@here.com'
+$Global:recipientname = 'My Name'
+$Global:recipient2email = 'me@here.com'
+$Global:recipient2name = 'My Other Name'
+$Global:senderemailaddress = 'myautomationemail@here.com'
+$Global:sendername = 'Friendly Automation Service'
+$Global:replytoaddress = 'myautomationemail@here.com'
+$Global:replytoname = 'Friendly Automation Service'
 
 Function SendMail()
 {
