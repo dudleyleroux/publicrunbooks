@@ -1,0 +1,94 @@
+<# Global variables #>
+$Global:AzureStorageAccountName = "domainmanagementdiag514"
+$Global:AzureStorageAccountKey = Get-AutomationVariable -Name 'azurestoragekey'
+$Global:recipientemail = 'dudley.leroux@emotionstudios.co.za'
+$Global:recipientname = 'Dudley LeRoux'
+$Global:recipient2email = 'dudley@ogive.co.za'
+$Global:recipient2name = 'Dudley LeRoux'
+$Global:senderemailaddress = 'dudley.leroux@emotionstudios.co.za'
+$Global:sendername = 'Dudley LeRoux'
+$Global:replytoaddress = 'dudley.leroux@emotionstudios.co.za'
+$Global:replytoname = 'Dudley LeRoux'
+
+Function SendMail()
+{
+
+	$sendEmailUrl = "https://api.sendgrid.com/v3/mail/send"
+    $apiKey = Get-AutomationVariable -Name 'sendgridapikey' #Variable configured in automation account.
+
+$headers = @{}
+$headers.Add("Authorization","Bearer $apiKey")
+
+$ct = "application/json"
+
+$jsonRequest = [ordered]@{
+   personalizations= @(@{
+    to = @(
+        @{
+            email = "$recipientemail"
+            name = "$recipientname"
+        }
+        @{
+            email = "$recipient2email"
+            name = "$recipient2name"
+        }
+    )
+    subject = "Azure Automation - Students Created"
+  })
+  from = @{
+    email = "$senderemailaddress"
+    name = "$sendername"
+  }
+  reply_to = @{
+    email = "$replytoaddress"
+    name = "$replytoname"
+  }
+  attachments = @( @{
+       content = $EncodedData
+       content_id = 'ii_139db99fdb5c3704'
+       disposition = 'inline'
+       filename = 'myattachment.txt'
+       name = 'myattachment'
+       type = 'txt'
+    }
+  )
+  content = @(
+    @{
+        type = "text/plain"
+        value = "Email body goes here"
+    }
+  )
+} | ConvertTo-Json -Depth 10
+
+Invoke-RestMethod -Method Post `
+    -Headers $headers `
+    -Body $jsonRequest `
+    -ContentType $ct `
+    -Uri $sendEmailUrl
+
+}
+
+
+Function Get-ItemFromAzureStorage {
+
+$AzureOrgIdCredential = "dudleytestcred"
+$Cred = Get-AutomationPSCredential -Name $AzureOrgIdCredential
+
+$context = New-AzureStorageContext -StorageAccountName $Global:AzureStorageAccountName -StorageAccountKey $Global:AzureStorageAccountKey
+$Container = "studentupload"
+
+$blobname =  "textfiletosend.txt"
+$b=$env:TEMP + "\$blobname"
+
+$azcontainer = Get-AzureStorageContainer -Name $Container -Context $context -ErrorAction stop
+Get-AzureStorageBlobContent -Container $Container -Blob $blobname -Context $context -Destination "$b"
+
+#Encode File for email attachment
+$Data = get-content $b
+$Bytes = [System.Text.Encoding]::Unicode.GetBytes($Data)
+$Global:EncodedData = [Convert]::ToBase64String($Bytes)
+
+SendMail
+}
+
+Get-ItemFromAzureStorage
