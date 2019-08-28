@@ -1,3 +1,6 @@
+# Retrieves a file from blob storage and emails it.
+
+
 <# Global variables #>
 $Global:AzureStorageAccountName = "domainmanagementdiag514"
 $Global:AzureStorageAccountKey = Get-AutomationVariable -Name 'azurestoragekey'
@@ -85,10 +88,12 @@ Get-AzureStorageBlobContent -Container $Container -Blob $blobname -Context $cont
 
 #Encode File for email attachment
 $Data = get-content $b
-$Bytes = [System.Text.Encoding]::Unicode.GetBytes($Data)
+$Bytes = [System.Text.Encoding]::utf8.GetBytes($Data)
 $Global:EncodedData = [Convert]::ToBase64String($Bytes)
 
 SendMail
 }
 
 Get-ItemFromAzureStorage
+
+
